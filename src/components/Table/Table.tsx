@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { TableRow } from '../TableRow';
 import { WinMessage } from '../WinMessage';
 import './Table.css';
@@ -31,7 +31,7 @@ export const Table: React.FC = () => {
     shuffleBoard();
   }
 	
-	function checkOnWin() {
+	const checkOnWin = useCallback(() => {
 		const current = currentBoard.flat();
 		const win = winBoard.flat();
 
@@ -45,8 +45,8 @@ export const Table: React.FC = () => {
 				setShouldMessage(true);
 			}
 		}
-	}
-	
+	}, [currentBoard]);
+
 	const handleKey = (event: KeyboardEvent) => {
     if (event.key === 'ArrowUp') {
       setCurrentBoard(current => {
@@ -140,7 +140,7 @@ export const Table: React.FC = () => {
     return () => {
       document.removeEventListener('keyup', handleKey);
     };
-  }, [currentBoard])
+  }, [checkOnWin, moves])
 
 	const removeMessage = (isRemoved: boolean) => {
 		setShouldMessage(isRemoved);

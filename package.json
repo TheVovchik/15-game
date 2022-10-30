@@ -1,6 +1,6 @@
 {
   "name": "my-app",
-  "homepage": "https://thevovchik.github.io/15-game/",
+  "homepage": "https://thevovchik.github.io/15-game",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -13,6 +13,7 @@
     "@types/react-dom": "^18.0.8",
     "bulma": "^0.9.4",
     "framer-motion": "^7.6.2",
+    "gh-pages": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",

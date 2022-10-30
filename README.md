@@ -1,4 +1,4 @@
-[DEMO-LINK](https://thevovchik.github.io/react_debounce/)
+[DEMO-LINK](https://thevovchik.github.io/15-game/)
 
 # Getting Started with Create React App
 
