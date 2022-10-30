@@ -1,0 +1,13 @@
+.game__board {
+  margin: 0 auto;
+	padding: 0;
+	margin-bottom: 50px;
+	border: 2px solid grey;
+  pointer-events: none;
+	user-select: none;
+}
+
+.game__board td {
+	padding: 0;
+}
+
