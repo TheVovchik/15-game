@@ -3,11 +3,21 @@ import { TableRow } from '../TableRow';
 import { WinMessage } from '../WinMessage';
 import './Table.css';
 import { winBoard, possibleNumbers } from '../../ComponentsGlobalVariables';
+import { motion } from "framer-motion";
 
 export const Table: React.FC = () => {
 	const [currentBoard, setCurrentBoard] = useState<number[][]>(winBoard.map(x => x.map(y => y)))
 	const [shouldMessage, setShouldMessage] = useState(false);
 	const [moves, setMoves] = useState(0);
+
+	function useForceUpdate(){
+    const [value, setValue] = useState(0); // integer state
+    return () => setValue(value => value + 1); // update state to force render
+    // An function that increment 👆🏻 the previous state like here 
+    // is better than directly setting `value + 1`
+	}
+
+	const forceUpdate = useForceUpdate();
 
 	function shuffleBoard() {
     const currentPossibleNumbers = [...possibleNumbers];
@@ -25,6 +35,7 @@ export const Table: React.FC = () => {
 		setMoves(0);
 		setShouldMessage(false);
     setCurrentBoard(newBoard);
+		forceUpdate();
   }
 
   const shuffleStartBoard = () => {
@@ -154,14 +165,16 @@ export const Table: React.FC = () => {
 			<WinMessage
 				toClearMessage={removeMessage}
 			/>}
-			<table className="game__board">
+			<motion.table
+				animate={{ x: [0, 100, 0] }}
+				className="game__board">
 				<tbody>
 					<TableRow row={currentBoard[0]} />
 					<TableRow row={currentBoard[1]} />
 					<TableRow row={currentBoard[2]} />
 					<TableRow row={currentBoard[3]} />
 				</tbody>
-			</table>
+			</motion.table>
 
 			<button
         className="button is-info"

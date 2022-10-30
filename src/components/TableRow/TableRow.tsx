@@ -9,8 +9,8 @@ type Props = {
 export const TableRow: React.FC<Props> = ({ row }) => {
 	return (
 		<tr className="table__row">
-			{row.map(cell => (
-				<td key={cell} className="table__cell">
+			{row.map((cell, i) => (
+				<td key={i} className="table__cell">
 					{!!cell && <Cell cell={cell} />}
 				</td>
 				))}
