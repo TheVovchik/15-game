@@ -9,15 +9,8 @@ export const Table: React.FC = () => {
 	const [currentBoard, setCurrentBoard] = useState<number[][]>(winBoard.map(x => x.map(y => y)))
 	const [shouldMessage, setShouldMessage] = useState(false);
 	const [moves, setMoves] = useState(0);
-
-	function useForceUpdate(){
-    const [value, setValue] = useState(0); // integer state
-    return () => setValue(value => value + 1); // update state to force render
-    // An function that increment 👆🏻 the previous state like here 
-    // is better than directly setting `value + 1`
-	}
-
-	const forceUpdate = useForceUpdate();
+	
+	const start = [0, 0];
 
 	function shuffleBoard() {
     const currentPossibleNumbers = [...possibleNumbers];
@@ -35,7 +28,6 @@ export const Table: React.FC = () => {
 		setMoves(0);
 		setShouldMessage(false);
     setCurrentBoard(newBoard);
-		forceUpdate();
   }
 
   const shuffleStartBoard = () => {
@@ -58,100 +50,189 @@ export const Table: React.FC = () => {
 		}
 	}, [currentBoard]);
 
-	const handleKey = (event: KeyboardEvent) => {
-    if (event.key === 'ArrowUp') {
-      setCurrentBoard(current => {
-        const newBoard = current.map(x => x.map(y => y));
+	const moveUp = () => {
+		setCurrentBoard(current => {
+			const newBoard = current.map(x => x.map(y => y));
 
-        for (let i = 0; i < 4; i++) {
-          for (let j = 0; j < 4; j++) {
-            if (newBoard[i][j] === 0 && i !== 3) {
-              const lowerElement = newBoard[i + 1][j]
-              newBoard[i][j] = lowerElement;
-              newBoard[i + 1][j] = 0;
+			for (let i = 0; i < 4; i++) {
+				for (let j = 0; j < 4; j++) {
+					if (newBoard[i][j] === 0 && i !== 3) {
+						const lowerElement = newBoard[i + 1][j]
+						newBoard[i][j] = lowerElement;
+						newBoard[i + 1][j] = 0;
 
-              return newBoard;
-            }
-          }
-        }
+						return newBoard;
+					}
+				}
+			}
 
-        return newBoard;
-      })
+			return newBoard;
+		});
+	};
+
+	const moveDown = () => {
+		setCurrentBoard(current => {
+			const newBoard = current.map(x => x.map(y => y));;
+
+			for (let i = 0; i < 4; i++) {
+				for (let j = 0; j < 4; j++) {
+					if (newBoard[i][j] === 0 && i !== 0) {
+						const upperElement = newBoard[i - 1][j]
+						newBoard[i][j] = upperElement;
+						newBoard[i - 1][j] = 0;
+
+						return newBoard;
+					}
+				}
+			}
+
+			return newBoard;
+		});
+	};
+
+	const moveLeft = () => {
+		setCurrentBoard(current => {
+			const newBoard = current.map(x => x.map(y => y));;
+
+			for (let i = 0; i < 4; i++) {
+				for (let j = 0; j < 4; j++) {
+					if (newBoard[i][j] === 0 && j !== 3) {
+						const rightElement = newBoard[i][j + 1]
+						newBoard[i][j] = rightElement;
+						newBoard[i][j + 1] = 0;
+
+						return newBoard;
+					}
+				}
+			}
+
+			return newBoard;
+		});
+	};
+
+	const moveRight = () => {
+		setCurrentBoard(current => {
+			const newBoard = current.map(x => x.map(y => y));;
+
+			for (let i = 0; i < 4; i++) {
+				for (let j = 0; j < 4; j++) {
+					if (newBoard[i][j] === 0 && j !== 0) {
+						const leftElement = newBoard[i][j - 1]
+						newBoard[i][j] = leftElement;
+						newBoard[i][j - 1] = 0;
+
+						return newBoard;
+					}
+				}
+			}
+
+			return newBoard;
+		});
+	};
+
+	const chooseDirection = (direction: string) => {
+    if (direction === 'ArrowUp') {
+      moveUp();
     }
 
-    if (event.key === 'ArrowDown') {
-      setCurrentBoard(current => {
-        const newBoard = current.map(x => x.map(y => y));;
-
-        for (let i = 0; i < 4; i++) {
-          for (let j = 0; j < 4; j++) {
-            if (newBoard[i][j] === 0 && i !== 0) {
-              const upperElement = newBoard[i - 1][j]
-              newBoard[i][j] = upperElement;
-              newBoard[i - 1][j] = 0;
-
-              return newBoard;
-            }
-          }
-        }
-
-				return newBoard;
-      })
+    if (direction === 'ArrowDown') {
+      moveDown();
     }
 
-    if (event.key === 'ArrowLeft') {
-      setCurrentBoard(current => {
-        const newBoard = current.map(x => x.map(y => y));;
-
-        for (let i = 0; i < 4; i++) {
-          for (let j = 0; j < 4; j++) {
-            if (newBoard[i][j] === 0 && j !== 3) {
-              const rightElement = newBoard[i][j + 1]
-              newBoard[i][j] = rightElement;
-              newBoard[i][j + 1] = 0;
-
-              return newBoard;
-            }
-          }
-        }
-
-        return newBoard;
-      })
+    if (direction === 'ArrowLeft') {
+      moveLeft();
     }
 
-    if (event.key === 'ArrowRight') {
-      setCurrentBoard(current => {
-        const newBoard = current.map(x => x.map(y => y));;
-
-        for (let i = 0; i < 4; i++) {
-          for (let j = 0; j < 4; j++) {
-            if (newBoard[i][j] === 0 && j !== 0) {
-              const leftElement = newBoard[i][j - 1]
-              newBoard[i][j] = leftElement;
-              newBoard[i][j - 1] = 0;
-
-              return newBoard;
-            }
-          }
-        }
-
-				return newBoard;
-      })
+    if (direction === 'ArrowRight') {
+      moveRight();
     }
 
 		setMoves(currentMove => (currentMove + 1));
+	}
+
+	const handleKey = (event: KeyboardEvent) => {
+		chooseDirection(event.key);
   }
+
+	const handleMouseStart = (event: MouseEvent) => {
+		const x = event.screenX;
+		const y = event.screenY;
+
+		start[0] = x;
+		start[1] = y;
+	}
+
+	const handleTouchStart = (event: TouchEvent) => {
+    const x = event.changedTouches[0].screenX;
+    const y = event.changedTouches[0].screenY;
+
+		start[0] = x;
+		start[1] = y;
+	}
+
+	const chooseArrow = (dX: number, dY: number) => {
+		if (Math.abs(dX) < 20 && Math.abs(dY) < 20) {
+			return;
+		}
+
+		if (Math.abs(dY) > Math.abs(dX) && dY > 0) {
+			chooseDirection('ArrowUp');
+		}
+
+		if (Math.abs(dY) > Math.abs(dX) && dY < 0) {
+			chooseDirection('ArrowDown');
+		}
+
+		if (Math.abs(dY) < Math.abs(dX) && dX > 0) {
+			chooseDirection('ArrowLeft');
+		}
+
+		if (Math.abs(dY) < Math.abs(dX) && dX < 0) {
+			chooseDirection('ArrowRight');
+		}
+	}
+
+	const handleMouseEnd = (event: MouseEvent) => {
+		const x = event.screenX;
+		const y = event.screenY;
+		const startX = start[0];
+		const startY = start[1];
+		const dX = startX - x;
+		const dY = startY - y;
+
+		chooseArrow(dX, dY);
+	}
+
+	const handleTouchEnd = (event: TouchEvent) => {
+    const x = event.changedTouches[0].screenX;
+    const y = event.changedTouches[0].screenY;
+		const startX = start[0];
+		const startY = start[1];
+		const dX = startX - x;
+		const dY = startY - y;
+
+		chooseArrow(dX, dY);
+	}
+
 
   useEffect(() => {
     document.addEventListener('keyup', handleKey);
+		document.addEventListener('mousedown', handleMouseStart);
+		document.addEventListener('mouseup', handleMouseEnd);
+		document.addEventListener('touchstart', handleTouchStart);
+		document.addEventListener('touchend', handleTouchEnd);
 		if (moves > 0) {
 			checkOnWin();
 		}
 
     return () => {
       document.removeEventListener('keyup', handleKey);
+			document.removeEventListener('mousedown', handleMouseStart);
+			document.removeEventListener('mouseup', handleMouseEnd);
+			document.removeEventListener('touchstart', handleTouchStart);
+			document.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [checkOnWin, moves])
+  }, [moves])
 
 	const removeMessage = (isRemoved: boolean) => {
 		setShouldMessage(isRemoved);

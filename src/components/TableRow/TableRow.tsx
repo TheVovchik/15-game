@@ -7,16 +7,16 @@ type Props = {
 }
 
 export const TableRow: React.FC<Props> = React.memo(({ row }) => {
-	const [currentRow, setCurrentRow] = useState<number[]>(row)
+	const [currentRow, setCurrentRow] = useState<number[]>(row);
+
 	useEffect(() => {
 		for (let i = 0; i < row.length; i++) {
 			if (currentRow[i] !== row[i]) {
-				console.log('row was changed')
 				setCurrentRow(row);
 				break;
 			}
 		}
-	}, [row])
+	}, [row]);
 
 	return (
 		<tr className="table__row">
