@@ -168,6 +168,8 @@ export const Table: React.FC<Props> = ({ onInfo }) => {
 	}
 
 	const handleTouchStart = (event: TouchEvent) => {
+		event.preventDefault();
+
     const x = event.changedTouches[0].screenX;
     const y = event.changedTouches[0].screenY;
 
@@ -209,6 +211,8 @@ export const Table: React.FC<Props> = ({ onInfo }) => {
 	}
 
 	const handleTouchEnd = (event: TouchEvent) => {
+		event.preventDefault();
+
     const x = event.changedTouches[0].screenX;
     const y = event.changedTouches[0].screenY;
 		const startX = start[0];
