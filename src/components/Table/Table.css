@@ -3,7 +3,6 @@
 	padding: 0;
 	margin-bottom: 50px;
 	border: 2px solid grey;
-  pointer-events: none;
 	user-select: none;
 }
 

@@ -5,7 +5,11 @@ import './Table.css';
 import { winBoard, possibleNumbers } from '../../ComponentsGlobalVariables';
 import { motion } from "framer-motion";
 
-export const Table: React.FC = () => {
+type Props = {
+	onInfo: (state: boolean) => void
+}
+
+export const Table: React.FC<Props> = ({ onInfo }) => {
 	const [currentBoard, setCurrentBoard] = useState<number[][]>(winBoard.map(x => x.map(y => y)))
 	const [shouldMessage, setShouldMessage] = useState(false);
 	const [moves, setMoves] = useState(0);
@@ -28,6 +32,7 @@ export const Table: React.FC = () => {
 		setMoves(0);
 		setShouldMessage(false);
     setCurrentBoard(newBoard);
+		onInfo(false);
   }
 
   const shuffleStartBoard = () => {
