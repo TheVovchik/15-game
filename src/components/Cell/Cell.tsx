@@ -5,7 +5,8 @@ type Props = {
 	cell: number;
 };
 
-export const Cell: React.FC<Props> = ({ cell }) => {
+export const Cell: React.FC<Props> = React.memo(({ cell }) => {
+	console.log('cell was rendered')
 	return (
 		<motion.div
 			className="cardes"
@@ -15,4 +16,4 @@ export const Cell: React.FC<Props> = ({ cell }) => {
 			{cell}
 		</motion.div>
 	);
-};
+});
