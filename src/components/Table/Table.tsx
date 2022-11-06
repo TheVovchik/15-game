@@ -1,15 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { TableRow } from '../TableRow';
+import { TableRow } from './TableRow';
 import { WinMessage } from '../WinMessage';
 import './Table.css';
-import { winBoard, possibleNumbers } from '../../ComponentsGlobalVariables';
+import { winBoard, possibleNumbers } from './Table.constants';
 import { motion } from "framer-motion";
 
 type Props = {
 	onInfo: (state: boolean) => void
 }
 
-export const Table: React.FC<Props> = ({ onInfo }) => {
+enum Directions {
+	UP = 'ArrowUp',
+	DOWN = 'ArrowDown',
+	LEFT = 'ArrowLeft',
+	RIGHT = 'ArrowRight',
+}
+
+export const Table: React.FC<Props> = React.memo(({ onInfo }) => {
 	const [currentBoard, setCurrentBoard] = useState<number[][]>(winBoard.map(x => x.map(y => y)))
 	const [shouldMessage, setShouldMessage] = useState(false);
 	const [moves, setMoves] = useState(0);
@@ -17,21 +24,23 @@ export const Table: React.FC<Props> = ({ onInfo }) => {
 	const start = [0, 0];
 
 	function shuffleBoard() {
-    const currentPossibleNumbers = [...possibleNumbers];
-    const newBoard = winBoard.map(x => x.map(y => y));
+		const currentPossibleNumbers = [...possibleNumbers];
+		const newBoard = winBoard.map(x => x.map(y => y));
 
-    for (let i = 0; i < 4; i++) {
-      for (let j = 0; j < 4; j++) {
-        const index = Math.floor(Math.random() * currentPossibleNumbers.length);
-        
-        newBoard[i][j] = currentPossibleNumbers[index];
-        currentPossibleNumbers.splice(index, 1);
-      }
-    }
+		for (let i = 0; i < 4; i++) {
+
+			for (let j = 0; j < 4; j++) {
+				const index = Math.floor(Math.random() * currentPossibleNumbers.length);
+
+				newBoard[i][j] = currentPossibleNumbers[index];
+				currentPossibleNumbers.splice(index, 1);
+			}
+
+		}
 
 		setMoves(0);
 		setShouldMessage(false);
-    setCurrentBoard(newBoard);
+		setCurrentBoard(newBoard);
 		onInfo(false);
   }
 
@@ -55,16 +64,24 @@ export const Table: React.FC<Props> = ({ onInfo }) => {
 		}
 	}, [currentBoard]);
 
-	const moveUp = () => {
+	const verticalMove = (end: number) => {
 		setCurrentBoard(current => {
 			const newBoard = current.map(x => x.map(y => y));
 
 			for (let i = 0; i < 4; i++) {
 				for (let j = 0; j < 4; j++) {
-					if (newBoard[i][j] === 0 && i !== 3) {
-						const lowerElement = newBoard[i + 1][j]
-						newBoard[i][j] = lowerElement;
-						newBoard[i + 1][j] = 0;
+					if (newBoard[i][j] === 0 && i !== end) {
+						const neighbor = end === 0
+							? newBoard[i - 1][j]
+							: newBoard[i + 1][j];
+
+						if (end === 0) {
+							newBoard[i - 1][j] = 0;
+						} else {
+							newBoard[i + 1][j] = 0;
+						}
+							
+						newBoard[i][j] = neighbor;
 
 						return newBoard;
 					}
@@ -73,18 +90,26 @@ export const Table: React.FC<Props> = ({ onInfo }) => {
 
 			return newBoard;
 		});
-	};
+	}
 
-	const moveDown = () => {
+	const horizontalMove = (end: number) => {
 		setCurrentBoard(current => {
 			const newBoard = current.map(x => x.map(y => y));;
 
 			for (let i = 0; i < 4; i++) {
 				for (let j = 0; j < 4; j++) {
-					if (newBoard[i][j] === 0 && i !== 0) {
-						const upperElement = newBoard[i - 1][j]
-						newBoard[i][j] = upperElement;
-						newBoard[i - 1][j] = 0;
+					if (newBoard[i][j] === 0 && j !== end) {
+						const neighbor = end === 0
+							? newBoard[i][j - 1]
+							: newBoard[i][j + 1];
+						
+						if (end === 0) {
+							newBoard[i][j - 1] = 0;
+						} else {
+							newBoard[i][j +	 1] = 0
+						}
+						
+						newBoard[i][j] = neighbor;
 
 						return newBoard;
 					}
@@ -93,70 +118,35 @@ export const Table: React.FC<Props> = ({ onInfo }) => {
 
 			return newBoard;
 		});
-	};
+	}
 
-	const moveLeft = () => {
-		setCurrentBoard(current => {
-			const newBoard = current.map(x => x.map(y => y));;
+	const chooseDirection = (direction: Directions) => {
+		switch (direction) {
+			case Directions.UP:
+				verticalMove(3);
+				break;
 
-			for (let i = 0; i < 4; i++) {
-				for (let j = 0; j < 4; j++) {
-					if (newBoard[i][j] === 0 && j !== 3) {
-						const rightElement = newBoard[i][j + 1]
-						newBoard[i][j] = rightElement;
-						newBoard[i][j + 1] = 0;
+			case Directions.DOWN:
+				verticalMove(0);
+				break;
 
-						return newBoard;
-					}
-				}
-			}
+			case Directions.LEFT:
+				horizontalMove(3);
+				break;
+			
+			case Directions.RIGHT:
+				horizontalMove(0);
+				break;
 
-			return newBoard;
-		});
-	};
-
-	const moveRight = () => {
-		setCurrentBoard(current => {
-			const newBoard = current.map(x => x.map(y => y));;
-
-			for (let i = 0; i < 4; i++) {
-				for (let j = 0; j < 4; j++) {
-					if (newBoard[i][j] === 0 && j !== 0) {
-						const leftElement = newBoard[i][j - 1]
-						newBoard[i][j] = leftElement;
-						newBoard[i][j - 1] = 0;
-
-						return newBoard;
-					}
-				}
-			}
-
-			return newBoard;
-		});
-	};
-
-	const chooseDirection = (direction: string) => {
-    if (direction === 'ArrowUp') {
-      moveUp();
-    }
-
-    if (direction === 'ArrowDown') {
-      moveDown();
-    }
-
-    if (direction === 'ArrowLeft') {
-      moveLeft();
-    }
-
-    if (direction === 'ArrowRight') {
-      moveRight();
-    }
+			default:
+				return
+		}
 
 		setMoves(currentMove => (currentMove + 1));
 	}
 
 	const handleKey = (event: KeyboardEvent) => {
-		chooseDirection(event.key);
+		chooseDirection(event.key as Directions);
   }
 
 	const handleMouseStart = (event: MouseEvent) => {
@@ -181,19 +171,19 @@ export const Table: React.FC<Props> = ({ onInfo }) => {
 		}
 
 		if (Math.abs(dY) > Math.abs(dX) && dY > 0) {
-			chooseDirection('ArrowUp');
+			chooseDirection(Directions.UP);
 		}
 
 		if (Math.abs(dY) > Math.abs(dX) && dY < 0) {
-			chooseDirection('ArrowDown');
+			chooseDirection(Directions.DOWN);
 		}
 
 		if (Math.abs(dY) < Math.abs(dX) && dX > 0) {
-			chooseDirection('ArrowLeft');
+			chooseDirection(Directions.LEFT);
 		}
 
 		if (Math.abs(dY) < Math.abs(dX) && dX < 0) {
-			chooseDirection('ArrowRight');
+			chooseDirection(Directions.RIGHT);
 		}
 	}
 
@@ -271,4 +261,4 @@ export const Table: React.FC<Props> = ({ onInfo }) => {
       </button>
 		</>
 	)
-}
+})

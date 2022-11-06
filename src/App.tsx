@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import './App.css';
 import 'bulma/css/bulma.css';
 import { Table } from './components/Table';
+import { Notification } from './components/Notification';
 
 export const App: React.FC = () => {
   const [isShown, setIsShown] = useState(false);
 
-  const showInfo = (state: boolean) => {
-    setIsShown(state)
-  }
+  const showInfo = useCallback((state: boolean) => setIsShown(state), []);
 
   return (
     <div className="App">
@@ -19,18 +18,7 @@ export const App: React.FC = () => {
       >
         click for info
       </button>
-      {isShown && <p className="notification is-active">
-        <button
-          className="delete"
-          onClick={() => showInfo(false)}
-        ></button>
-        The 15 puzzle is a sliding puzzle having 15 square tiles numbered 1–15 in a frame that 
-        is 4 tiles high and 4 tiles wide, leaving one unoccupied tile position. 
-        Tiles in the same row or column of the open position can be moved by sliding them horizontally 
-        or vertically, respectively. The goal of the puzzle is to place the tiles in numerical order.
-        <br /><br />
-        Tap shuffle and let the game begin!
-      </p>}
+      {isShown && <Notification showInfo={showInfo}/>}
 
       <Table onInfo={showInfo} />
     </div>

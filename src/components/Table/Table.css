@@ -1,7 +1,7 @@
 .game__board {
   margin: 0 auto;
 	padding: 0;
-	margin-bottom: 50px;
+	margin-bottom: 30px;
 	border: 2px solid grey;
 	user-select: none;
 }

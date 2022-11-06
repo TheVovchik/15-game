@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './TableRow.css';
-import { Cell } from '../Cell';
+import { Cell } from './Cell';
 
 type Props = {
 	row: number[],
